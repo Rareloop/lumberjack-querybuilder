@@ -15,3 +15,6 @@ script:
 - vendor/bin/phpcs --standard=PSR2 ./src
 after_script:
 - php vendor/bin/coveralls -v
+notifications:
+  slack:
+    secure: ZUJv+QOYZS6Jb/sHx/6sKPP8PqOhPayIY6fy7Dw0r8JMp6BK30wATIHjREWsPKzpLu75zIITMe2KkXBrQSSbiLL1lqhqEVoFC8J+bcwwDq7/xDdBwfZikVoo6B7yrkC+Z0CFAtPDCM1/Oyw4fgdeX1Lid7AKtgfmsqJrOXhg6+EGxsU7UksJyUlwuBH7QBQbwH4Dh2/nFdA9Cy7FCMSVyH8cFXQmF8kZLwx+WkbQ5Rw/kKsmn57j1pwHvv1PbICDalM+o7SRykWziknqUzsaA2NIa1TXyjIELkX6z5rG5aPDeUTkKVeBmQmifgA46G9LKOq7Cgy3SZJt9x0sdBFh07qXJaxyk03kzDa9uvJcOtGeARFZUQwgEgTG+V0TmgNtz/m6qFd7JdXMii9ZLmjFKZ6hXDX5GPKS/iaqEPWUrPdIJwoCMBye0v/T+kd0nv+X+CV+JgFIwYgcv6lY6unXtup2e+cO2UUu9lLBahpX6vL8fOp3BCVaBdu+hcz0C+376XM3xL5wdIiEx/H2LKch5h1hgSbEzOktEjQMAVMb1k4zZxJA7+ktp0/6WIvJ1b+fHNCstaRx3q3PosTQuoOO13/ArFswE0KnWZtOJHxbmceXwuOGAA68QxMqQss+pcnMopHVXVWIWT8AxagaTX73/BNc6iz8usbsQC4W+i1Doi4=
