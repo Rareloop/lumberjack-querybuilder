@@ -5,11 +5,14 @@ namespace Rareloop\Lumberjack\QueryBuilder\Test;
 use Illuminate\Support\Collection;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\QueryBuilder\Post;
 use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
 use Timber\Timber;
 
 class QueryBuilderTest extends TestCase
 {
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     /** @test */
     public function correct_post_type_is_set()
     {
@@ -313,4 +316,35 @@ class QueryBuilderTest extends TestCase
         $builder = new QueryBuilder();
         $builder->whereMetaRelationshipIs('INVALID');
     }
+
+    /**
+     * @test
+     * @runTestInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function get_retrieves_list_of_posts()
+    {
+        $posts = [new Post(1, true), new Post(2, true)];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber
+            ->shouldReceive('get_posts')
+            ->withArgs([
+                Mockery::subset([
+                    'post_status' => 'publish',
+                    'offset' => 10,
+                ]),
+                Post::class,
+            ])
+            ->once()
+            ->andReturn($posts);
+
+        $builder = new QueryBuilder();
+        $returnedPosts = $builder->whereStatus('publish')->offset(10)->get();
+
+        $this->assertInstanceOf(Collection::class, $returnedPosts);
+        $this->assertSame($posts, $returnedPosts->toArray());
+    }
+
+    // TODO: Test that undefined functions throw an appropriate error
 }

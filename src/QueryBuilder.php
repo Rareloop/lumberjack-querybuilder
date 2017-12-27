@@ -3,9 +3,13 @@
 namespace Rareloop\Lumberjack\QueryBuilder;
 
 use Rareloop\Lumberjack\QueryBuilder\Exceptions\InvalidMetaRelationshipException;
+use Rareloop\Lumberjack\QueryBuilder\Post;
+use Timber\Timber;
 
 class QueryBuilder
 {
+    protected $postClass = Post::class;
+
     private $postType;
 
     private $limit;
@@ -184,6 +188,11 @@ class QueryBuilder
         $this->metaRelationship = $relation;
 
         return $this;
+    }
+
+    public function get()
+    {
+        return collect(Timber::get_posts($this->getParameters(), $this->postClass));
     }
 
     public function __call($name, $arguments)

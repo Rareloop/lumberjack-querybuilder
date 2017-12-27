@@ -7,8 +7,6 @@ use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
 
 class ScopedQueryBuilder extends QueryBuilder
 {
-    private $postClass;
-
     public function __construct($postClass)
     {
         $this->postClass = $postClass;

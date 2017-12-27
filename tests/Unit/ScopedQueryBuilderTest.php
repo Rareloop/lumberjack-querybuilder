@@ -7,9 +7,12 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Rareloop\Lumberjack\QueryBuilder\Post;
 use Rareloop\Lumberjack\QueryBuilder\ScopedQueryBuilder;
+use Timber\Timber;
 
 class ScopedQueryBuilderTest extends TestCase
 {
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     /** @test */
     public function correct_post_type_is_set()
     {
@@ -29,6 +32,32 @@ class ScopedQueryBuilderTest extends TestCase
     {
         $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
         $builder->wherePostType('test_post_type');
+    }
+
+    /**
+     * @test
+     * @runTestInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function get_retrieves_list_of_posts_of_correct_type()
+    {
+        $posts = [new PostWithQueryScope(1, true), new PostWithQueryScope(2, true)];
+
+        $timber = Mockery::mock('alias:' . Timber::class);
+        $timber->shouldReceive('get_posts')->withArgs([
+            Mockery::subset([
+                'post_type' => PostWithQueryScope::getPostType(),
+                'post_status' => 'publish',
+                'offset' => 10,
+            ]),
+            PostWithQueryScope::class,
+        ])->once()->andReturn($posts);
+
+        $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
+        $returnedPosts = $builder->whereStatus('publish')->offset(10)->get();
+
+        $this->assertInstanceOf(Collection::class, $returnedPosts);
+        $this->assertSame($posts, $returnedPosts->toArray());
     }
 
     /** @test */
@@ -57,6 +86,11 @@ class ScopedQueryBuilderTest extends TestCase
 
 class PostWithQueryScope extends Post
 {
+    public static function getPostType()
+    {
+        return 'post_with_query_scope';
+    }
+
     public function scopeInDraft($query)
     {
         return $query->whereStatus('draft');
