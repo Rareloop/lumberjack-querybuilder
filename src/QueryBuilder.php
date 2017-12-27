@@ -132,9 +132,15 @@ class QueryBuilder
         return $this;
     }
 
-    public function whereStatus($status)
+    public function whereStatus()
     {
-        $this->whereStatus = $status;
+        $args = func_get_args();
+
+        if (count($args) === 0) {
+            throw new \InvalidArgumentException('`whereStatus` must be called with at least one argument');
+        }
+
+        $this->whereStatus = count($args) > 1 ? $args : $args[0];
 
         return $this;
     }

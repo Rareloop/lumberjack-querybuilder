@@ -119,6 +119,42 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test */
+    public function can_filter_by_multiple_statuses_as_array()
+    {
+        $builder = new QueryBuilder();
+        $chainedBuilder = $builder->whereStatus(['publish', 'draft']);
+        $params = $builder->getParameters();
+
+        $this->assertSame($builder, $chainedBuilder);
+        $this->assertArraySubset([
+            'post_status' => ['publish', 'draft'],
+        ], $params);
+    }
+
+    /** @test */
+    public function can_filter_by_multiple_statuses_as_multiple_params()
+    {
+        $builder = new QueryBuilder();
+        $chainedBuilder = $builder->whereStatus('publish', 'draft');
+        $params = $builder->getParameters();
+
+        $this->assertSame($builder, $chainedBuilder);
+        $this->assertArraySubset([
+            'post_status' => ['publish', 'draft'],
+        ], $params);
+    }
+
+    /**
+     * @test
+     * @expectedException     InvalidArgumentException
+     */
+    public function calling_where_status_without_params_throws_an_exception()
+    {
+        $builder = new QueryBuilder();
+        $chainedBuilder = $builder->whereStatus();
+    }
+
+    /** @test */
     public function can_add_a_single_meta_query()
     {
         $builder = new QueryBuilder();
