@@ -49,10 +49,10 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function can_set_order()
+    public function can_set_order_desc()
     {
         $builder = new QueryBuilder();
-        $chainedBuilder = $builder->orderBy('menu_order', 'DESC');
+        $chainedBuilder = $builder->orderBy('menu_order', QueryBuilder::DESC);
         $params = $builder->getParameters();
 
         $this->assertSame($builder, $chainedBuilder);
@@ -63,10 +63,24 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test */
+    public function can_set_order_asc()
+    {
+        $builder = new QueryBuilder();
+        $chainedBuilder = $builder->orderBy('menu_order', QueryBuilder::ASC);
+        $params = $builder->getParameters();
+
+        $this->assertSame($builder, $chainedBuilder);
+        $this->assertArraySubset([
+            'orderby' => 'menu_order',
+            'order' => 'ASC',
+        ], $params);
+    }
+
+    /** @test */
     public function can_set_order_by_meta()
     {
         $builder = new QueryBuilder();
-        $chainedBuilder = $builder->orderByMeta('test_meta_key', 'DESC');
+        $chainedBuilder = $builder->orderByMeta('test_meta_key', QueryBuilder::DESC);
         $params = $builder->getParameters();
 
         $this->assertSame($builder, $chainedBuilder);
@@ -81,7 +95,7 @@ class QueryBuilderTest extends TestCase
     public function can_set_order_by_meta_with_numeric_ordering()
     {
         $builder = new QueryBuilder();
-        $chainedBuilder = $builder->orderByMeta('test_meta_key', 'DESC', true);
+        $chainedBuilder = $builder->orderByMeta('test_meta_key', QueryBuilder::DESC, QueryBuilder::NUMERIC);
         $params = $builder->getParameters();
 
         $this->assertSame($builder, $chainedBuilder);
@@ -237,10 +251,10 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function can_set_meta_query_relation()
+    public function can_set_meta_query_relation_or()
     {
         $builder = new QueryBuilder();
-        $chainedBuilder = $builder->whereMetaRelationshipIs('OR');
+        $chainedBuilder = $builder->whereMetaRelationshipIs(QueryBuilder::OR);
         $builder->whereMeta('test_meta_key1', 'test_meta_value1');
         $builder->whereMeta('test_meta_key2', 'test_meta_value2');
         $params = $builder->getParameters();
@@ -249,6 +263,33 @@ class QueryBuilderTest extends TestCase
         $this->assertArraySubset([
             'meta_query' => [
                 'relation' => 'OR',
+                [
+                    'key' => 'test_meta_key1',
+                    'value' => 'test_meta_value1',
+                    'compare' => '=',
+                ],
+                [
+                    'key' => 'test_meta_key2',
+                    'value' => 'test_meta_value2',
+                    'compare' => '=',
+                ]
+            ],
+        ], $params);
+    }
+
+    /** @test */
+    public function can_set_meta_query_relation_and()
+    {
+        $builder = new QueryBuilder();
+        $chainedBuilder = $builder->whereMetaRelationshipIs(QueryBuilder::AND);
+        $builder->whereMeta('test_meta_key1', 'test_meta_value1');
+        $builder->whereMeta('test_meta_key2', 'test_meta_value2');
+        $params = $builder->getParameters();
+
+        $this->assertSame($builder, $chainedBuilder);
+        $this->assertArraySubset([
+            'meta_query' => [
+                'relation' => 'AND',
                 [
                     'key' => 'test_meta_key1',
                     'value' => 'test_meta_value1',

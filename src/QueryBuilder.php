@@ -24,6 +24,17 @@ class QueryBuilder
     private $metaRelationship;
     private $metaQueries = [];
 
+    // Order Directions
+    const DESC = 'DESC';
+    const ASC = 'ASC';
+
+    // Field Types
+    const NUMERIC = 'numeric';
+
+    // Logical Operators
+    const OR = 'OR';
+    const AND = 'AND';
+
     public function getParameters()
     {
         $params = [
@@ -97,7 +108,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function orderBy($orderBy, $order = 'ASC')
+    public function orderBy($orderBy, string $order = QueryBuilder::ASC)
     {
         $order = strtoupper($order);
 
@@ -107,13 +118,13 @@ class QueryBuilder
         return $this;
     }
 
-    public function orderByMeta($metaKey, $order = 'ASC', $numeric = false)
+    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, string $type = null)
     {
         $order = strtoupper($order);
 
         $this->metaOrderBy = $metaKey;
         $this->metaOrder = $order;
-        $this->metaOrderNumeric = $numeric;
+        $this->metaOrderNumeric = ($type === QueryBuilder::NUMERIC ? true : false);
 
         return $this;
     }
@@ -162,12 +173,12 @@ class QueryBuilder
         return $this;
     }
 
-    public function whereMetaRelationshipIs($relation)
+    public function whereMetaRelationshipIs(string $relation)
     {
         $relation = strtoupper($relation);
 
-        if (!in_array($relation, ['AND', 'OR'])) {
-            throw new InvalidMetaRelationshipException();
+        if (!in_array($relation, [QueryBuilder::AND, QueryBuilder::OR])) {
+            throw new InvalidMetaRelationshipException('`whereMetaRelationshipIs` must be passed QueryBuilder::AND or QueryBuilder::OR');
         }
 
         $this->metaRelationship = $relation;
