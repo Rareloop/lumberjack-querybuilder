@@ -36,4 +36,9 @@ class ScopedQueryBuilder extends QueryBuilder
     {
         throw new CannotRedeclarePostTypeOnQueryException;
     }
+    
+    public function get()
+    {
+        return $this->postClass::query($this->getParameters());
+    }
 }
