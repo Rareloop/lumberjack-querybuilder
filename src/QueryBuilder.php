@@ -196,17 +196,4 @@ class QueryBuilder
     {
         return collect(Timber::get_posts($this->getParameters(), $this->postClass));
     }
-
-    public function __call($name, $arguments)
-    {
-        $scopeFunctionName = 'scope' . ucfirst($name);
-
-        $post = new $this->postClass(false, true);
-
-        if (!method_exists($post, $scopeFunctionName)) {
-            trigger_error('Call to undefined method '.$this->postClass.'::'.$scopeFunctionName.'()', E_USER_ERROR);
-        }
-
-        return $post->{$scopeFunctionName}($this);
-    }
 }
