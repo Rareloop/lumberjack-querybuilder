@@ -182,7 +182,9 @@ class QueryBuilder
         $relation = strtoupper($relation);
 
         if (!in_array($relation, [QueryBuilder::AND, QueryBuilder::OR])) {
-            throw new InvalidMetaRelationshipException('`whereMetaRelationshipIs` must be passed QueryBuilder::AND or QueryBuilder::OR');
+            throw new InvalidMetaRelationshipException(
+                '`whereMetaRelationshipIs` must be passed QueryBuilder::AND or QueryBuilder::OR'
+            );
         }
 
         $this->metaRelationship = $relation;
