@@ -9,7 +9,7 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-          printerClass="Codedungeon\PHPUnitPrettyResultPrinter\Printer">
+         printerClass="Codedungeon\PHPUnitPrettyResultPrinter\Printer">
     <testsuites>
         <testsuite name="Test Suite">
             <directory>tests</directory>
