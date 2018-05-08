@@ -196,4 +196,11 @@ class QueryBuilder
     {
         return collect(Timber::get_posts($this->getParameters(), $this->postClass));
     }
+
+    public function clone()
+    {
+        $clone = clone $this;
+
+        return $clone;
+    }
 }

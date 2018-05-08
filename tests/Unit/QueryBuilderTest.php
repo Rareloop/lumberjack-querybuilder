@@ -346,5 +346,27 @@ class QueryBuilderTest extends TestCase
         $this->assertSame($posts, $returnedPosts->toArray());
     }
 
+    /** @test */
+    public function can_clone_an_instance()
+    {
+        $builder1 = new QueryBuilder();
+        $chainedBuilder = $builder1->limit(10);
+        $params = $builder1->getParameters();
+
+        $builder2 = $builder1->clone();
+
+        $builder1->limit(20);
+
+        $this->assertNotSame($builder1, $builder2);
+
+        $this->assertArraySubset([
+            'posts_per_page' => 20,
+        ], $builder1->getParameters());
+
+        $this->assertArraySubset([
+            'posts_per_page' => 10,
+        ], $builder2->getParameters());
+    }
+
     // TODO: Test that undefined functions throw an appropriate error
 }
