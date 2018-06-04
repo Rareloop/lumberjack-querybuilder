@@ -1,6 +1,6 @@
 <?php
 
-namespace Rareloop\Lumberjack\QueryBuilder\Providers;
+namespace Rareloop\Lumberjack\QueryBuilder;
 
 use Rareloop\Lumberjack\Providers\ServiceProvider;
 use Rareloop\Lumberjack\QueryBuilder\Contracts\QueryBuilder as QueryBuilderContract;
