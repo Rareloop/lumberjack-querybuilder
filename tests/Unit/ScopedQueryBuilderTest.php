@@ -5,13 +5,24 @@ namespace Rareloop\Lumberjack\QueryBuilder\Test;
 use Illuminate\Support\Collection;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\QueryBuilder\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\QueryBuilder\Post;
+use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
 use Rareloop\Lumberjack\QueryBuilder\ScopedQueryBuilder;
 use Timber\Timber;
 
 class ScopedQueryBuilderTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
+    public function setUp()
+    {
+        $this->app = new Application;
+        $this->app->bind(QueryBuilderContract::class, QueryBuilder::class);
+
+        parent::setUp();
+    }
 
     /** @test */
     public function correct_post_type_is_set()
@@ -81,6 +92,24 @@ class ScopedQueryBuilderTest extends TestCase
     {
         $builder = new ScopedQueryBuilder(PostWithQueryScope::class);
         $builder->nonExistentScope();
+    }
+
+    /** @test */
+    public function can_use_a_different_query_builder_implementation()
+    {
+        $this->app->bind(QueryBuilderContract::class, CustomQueryBuilder::class);
+
+        $builder = new ScopedQueryBuilder(Post::class);
+
+        $this->assertSame('it works', $builder->nonStandardMethod());
+    }
+}
+
+class CustomQueryBuilder extends QueryBuilder
+{
+    public function nonStandardMethod()
+    {
+        return 'it works';
     }
 }
 

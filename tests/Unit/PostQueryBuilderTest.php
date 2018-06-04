@@ -4,12 +4,23 @@ namespace Rareloop\Lumberjack\QueryBuilder\Test;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Rareloop\Lumberjack\Application;
+use Rareloop\Lumberjack\QueryBuilder\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\QueryBuilder\Post;
+use Rareloop\Lumberjack\QueryBuilder\QueryBuilder;
 use Rareloop\Lumberjack\QueryBuilder\ScopedQueryBuilder;
 
 class PostQueryBuilderTest extends TestCase
 {
     use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
+    public function setUp()
+    {
+        $this->app = new Application;
+        $this->app->bind(QueryBuilderContract::class, QueryBuilder::class);
+
+        parent::setUp();
+    }
 
     /** @test */
     public function can_create_a_builder()

@@ -2,11 +2,13 @@
 
 namespace Rareloop\Lumberjack\QueryBuilder;
 
+use Rareloop\Lumberjack\QueryBuilder\Contracts\QueryBuilder as QueryBuilderContract;
 use Rareloop\Lumberjack\QueryBuilder\Exceptions\InvalidMetaRelationshipException;
 use Rareloop\Lumberjack\QueryBuilder\Post;
+use Tightenco\Collect\Support\Collection;
 use Timber\Timber;
 
-class QueryBuilder
+class QueryBuilder implements QueryBuilderContract
 {
     protected $postClass = Post::class;
 
@@ -39,7 +41,7 @@ class QueryBuilder
     const OR = 'OR';
     const AND = 'AND';
 
-    public function getParameters()
+    public function getParameters() : array
     {
         $params = [
             'post_type' => $this->postType,
@@ -91,28 +93,28 @@ class QueryBuilder
         return $params;
     }
 
-    public function wherePostType($postType)
+    public function wherePostType($postType) : QueryBuilderContract
     {
         $this->postType = $postType;
 
         return $this;
     }
 
-    public function limit($limit)
+    public function limit($limit) : QueryBuilderContract
     {
         $this->limit = $limit;
 
         return $this;
     }
 
-    public function offset($offset)
+    public function offset($offset) : QueryBuilderContract
     {
         $this->offset = $offset;
 
         return $this;
     }
 
-    public function orderBy($orderBy, string $order = QueryBuilder::ASC)
+    public function orderBy($orderBy, string $order = QueryBuilder::ASC) : QueryBuilderContract
     {
         $order = strtoupper($order);
 
@@ -122,7 +124,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, string $type = null)
+    public function orderByMeta($metaKey, string $order = QueryBuilder::ASC, string $type = null) : QueryBuilderContract
     {
         $order = strtoupper($order);
 
@@ -133,21 +135,21 @@ class QueryBuilder
         return $this;
     }
 
-    public function whereIdIn(array $ids)
+    public function whereIdIn(array $ids) : QueryBuilderContract
     {
         $this->whereIn = $ids;
 
         return $this;
     }
 
-    public function whereIdNotIn(array $ids)
+    public function whereIdNotIn(array $ids) : QueryBuilderContract
     {
         $this->whereNotIn = $ids;
 
         return $this;
     }
 
-    public function whereStatus()
+    public function whereStatus() : QueryBuilderContract
     {
         $args = func_get_args();
 
@@ -160,7 +162,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function whereMeta($key, $value, $compare = '=', $type = null)
+    public function whereMeta($key, $value, $compare = '=', $type = null) : QueryBuilderContract
     {
         $params = [
             'key' => $key,
@@ -177,7 +179,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function whereMetaRelationshipIs(string $relation)
+    public function whereMetaRelationshipIs(string $relation) : QueryBuilderContract
     {
         $relation = strtoupper($relation);
 
@@ -192,12 +194,12 @@ class QueryBuilder
         return $this;
     }
 
-    public function get()
+    public function get() : Collection
     {
         return collect(Timber::get_posts($this->getParameters(), $this->postClass));
     }
 
-    public function clone()
+    public function clone() : QueryBuilderContract
     {
         $clone = clone $this;
 
