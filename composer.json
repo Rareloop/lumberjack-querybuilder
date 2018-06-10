@@ -1,7 +1,7 @@
 {
     "name": "rareloop/lumberjack-querybuilder",
     "require": {
-        "rareloop/lumberjack-core": "dev-master@dev",
+        "rareloop/lumberjack-core": "^3.2.0",
         "tightenco/collect": ">=5.5.33"
     },
     "require-dev": {
